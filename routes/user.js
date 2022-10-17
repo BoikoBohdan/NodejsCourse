@@ -92,7 +92,7 @@ router.post(
         const { date, duration, description } = req.body;
         const userById = await db.User.findOne({ where: { id: userId }, attributes: ["userName", "id"] });
         if (!userById) {
-            res.status(403).send({
+            res.status(400).send({
                 errors: {
                     id: "No user with such id!",
                 },

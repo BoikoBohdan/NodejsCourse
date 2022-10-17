@@ -47,7 +47,7 @@ const validator = (validateOptions, isBodyParam) => (req, res, next) => {
         }
     });
     if (Object.values(errors).length) {
-        res.status(403).send({
+        res.status(400).send({
             errors,
         });
     } else {
