@@ -11,7 +11,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "localhost:3000/api/user?userName=javascript'; DROP TABLE Users;--.",
+					"raw": "localhost:3000/api/user?userName=test",
 					"host": [
 						"localhost"
 					],
@@ -28,7 +28,7 @@
 						},
 						{
 							"key": "userName",
-							"value": "javascript'; DROP TABLE Users;--."
+							"value": "test"
 						}
 					]
 				}
@@ -38,32 +38,140 @@
 		{
 			"name": "Post user",
 			"request": {
-				"method": "GET",
-				"header": []
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userName",
+							"value": "user name",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/user",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Find user by id",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "localhost:3000/api/user/1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"1"
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Create exercises for user",
 			"request": {
-				"method": "GET",
-				"header": []
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "description",
+							"value": "test",
+							"type": "default"
+						},
+						{
+							"key": "duration",
+							"value": "1",
+							"type": "default"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3000/api/user/133/exercise?description=123&duration=1",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"133",
+						"exercise"
+					],
+					"query": [
+						{
+							"key": "description",
+							"value": "123"
+						},
+						{
+							"key": "duration",
+							"value": "1"
+						}
+					]
+				}
 			},
 			"response": []
 		},
 		{
 			"name": "Exercise logs",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": []
+				},
+				"url": {
+					"raw": "localhost:3000/api/user/1/logs?limit=1&from=01/01/2022",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user",
+						"1",
+						"logs"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "1"
+						},
+						{
+							"key": "from",
+							"value": "01/01/2022"
+						}
+					]
+				}
 			},
 			"response": []
 		}
