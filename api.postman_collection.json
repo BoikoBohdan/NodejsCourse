@@ -1,0 +1,71 @@
+{
+	"info": {
+		"_postman_id": "c252bc7a-c538-4994-83a7-320bff86a604",
+		"name": "test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/user?userName=javascript'; DROP TABLE Users;--.",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"user"
+					],
+					"query": [
+						{
+							"key": "updatedFrom",
+							"value": "1",
+							"disabled": true
+						},
+						{
+							"key": "userName",
+							"value": "javascript'; DROP TABLE Users;--."
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post user",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Find user by id",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Create exercises for user",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Exercise logs",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}
