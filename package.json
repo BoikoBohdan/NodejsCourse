@@ -1,0 +1,21 @@
+{
+  "name": "nodejs-course",
+  "version": "1.0.0",
+  "description": "Simple API to finish course",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bohdan Boiko",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "nodemon": "^2.0.20",
+    "sequelize": "^6.25.2",
+    "sequelize-cli": "^6.5.1",
+    "sqlite3": "^5.1.2"
+  }
+}
