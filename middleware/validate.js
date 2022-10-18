@@ -57,7 +57,7 @@ const validator = (validateOptions, isBodyParam) => (req, res, next) => {
 
 // To validate if string is valid date
 var isDate = function(date) {
-    return !isNaN(Date.parse(date));
+    return /\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])*/.test(date)
 }
 
 // To check positive number

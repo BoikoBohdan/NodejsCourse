@@ -6,7 +6,7 @@ const db = require("../models");
 router.get(
     "/",
     validator({
-        userName: {
+        username: {
             type: "string",
         },
         updatedFrom: {
@@ -18,8 +18,8 @@ router.get(
     }),
     async (req, res) => {
         const dbQuery = {};
-        if (req.query.userName) {
-            dbQuery.userName = req.query.userName;
+        if (req.query.username) {
+            dbQuery.username = req.query.username;
         }
         if (req.query.updatedFrom && req.query.updatedTo) {
             dbQuery.updated = {
@@ -30,7 +30,7 @@ router.get(
             dbQuery.updated = req.query.updatedFrom || req.query.updatedTo;
         }
         const users = await db.User.findAll({
-            attributes: ["userName"],
+            attributes: ["username"],
             where: dbQuery,
         });
         res.status(200).send({
@@ -43,7 +43,7 @@ router.post(
     "/",
     validator(
         {
-            userName: {
+            username: {
                 type: "string",
                 required: true,
             },
@@ -51,9 +51,9 @@ router.post(
         true
     ),
     async (req, res) => {
-        const { userName } = req.body;
+        const { username } = req.body;
         const user = await db.User.create({
-            userName,
+            username,
         });
         res.status(200).send({
             data: user,
@@ -63,14 +63,14 @@ router.post(
 
 router.get("/:id", async (req, res) => {
     const id = parseInt(req.params.id);
-    const user = await db.User.findOne({ where: { id }, attributes: ["userName"] });
+    const user = await db.User.findOne({ where: { id }, attributes: ["username"] });
     res.status(200).send({
         data: user,
     });
 });
 
 router.post(
-    "/:id/exercise",
+    "/:id/exercises",
     validator(
         {
             description: {
@@ -90,8 +90,8 @@ router.post(
     async (req, res) => {
         const userId = parseInt(req.params.id);
         const { date, duration, description } = req.body;
-        const userById = await db.User.findOne({ where: { id: userId }, attributes: ["userName", "id"] });
-        if (!userById) {
+        const user = await db.User.findOne({ where: { id: userId }, attributes: ["username", "id"] });
+        if (!user) {
             res.status(400).send({
                 errors: {
                     id: "No user with such id!",
@@ -142,7 +142,7 @@ router.get(
             exerciseQuery.updated = req.query.from || req.query.to;
         }
 
-        const user = await db.User.findOne({ where: { id }, attributes: ["userName"] });
+        const user = await db.User.findOne({ where: { id }, attributes: ["username"] });
         const exercises = await db.Exercise.findAll({ where: exerciseQuery, limit: req.query.limit || null , attributes: ["duration", "description", 'date']});
         res.status(200).send({
             data: { ...user.dataValues, logs: exercises || [], count: exercises.length },
