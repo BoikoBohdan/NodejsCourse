@@ -1,4 +1,5 @@
 const express = require("express");
+const { Op } = require("sequelize");
 const router = express.Router();
 const validator = require("../middleware/validate");
 const db = require("../models");
@@ -27,8 +28,13 @@ router.get(
                     $between: [req.query.updatedFrom && req.query.updatedTo],
                 };
             }
-            if (req.query.updatedFrom || req.query.updatedTo) {
-                dbQuery.updated = req.query.updatedFrom || req.query.updatedTo;
+            if (req.query.updatedFrom) {
+                exerciseQuery.updatedAt = {};
+                exerciseQuery.updatedAt[Op.gte] = new Date(req.query.updatedFrom);
+            }
+            if (req.query.updatedTo) {
+                exerciseQuery.updatedAt = {};
+                exerciseQuery.updatedAt[Op.lte] = new Date(req.query.updatedTo);
             }
             const users = await db.User.findAll({
                 attributes: ["username", "id"],
@@ -58,6 +64,13 @@ router.post(
     async (req, res) => {
         const { username } = req.body;
         try {
+            const existUser = await db.User.findOne({
+                where: { username },
+            });
+            if (existUser) {
+                res.status(400).send({ error: "User with such username already exists" });
+                return;
+            }
             const user = await db.User.create({
                 username,
             });
@@ -159,15 +172,25 @@ router.get(
                     $between: [req.query.from && req.query.to],
                 };
             }
-            if (req.query.from || req.query.to) {
-                exerciseQuery.updated = req.query.from || req.query.to;
+            if (req.query.from) {
+                exerciseQuery.date = {};
+                exerciseQuery.date[Op.gte] = new Date(req.query.from);
+            }
+            if (req.query.to) {
+                exerciseQuery.date = {};
+                exerciseQuery.date[Op.lte] = new Date(req.query.to);
             }
 
             const user = await db.User.findOne({ where: { id }, attributes: ["username"] });
+            if (!user) {
+                res.status(400).send({ error: "No user with such id" });
+                return;
+            }
             const exercises = await db.Exercise.findAll({
                 where: exerciseQuery,
                 limit: req.query.limit || null,
                 attributes: ["duration", "description", "date"],
+                order: [['date', 'ASC']]
             });
             res.status(200).send({
                 data: { ...user.dataValues, logs: exercises || [], count: exercises.length },
