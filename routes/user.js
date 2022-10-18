@@ -29,8 +29,9 @@ router.get(
         if (req.query.updatedFrom || req.query.updatedTo) {
             dbQuery.updated = req.query.updatedFrom || req.query.updatedTo;
         }
+
         const users = await db.User.findAll({
-            attributes: ["username"],
+            attributes: ["username", "id"],
             where: dbQuery,
         });
         res.status(200).send({
