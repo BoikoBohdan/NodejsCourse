@@ -17,26 +17,30 @@ router.get(
         },
     }),
     async (req, res) => {
-        const dbQuery = {};
-        if (req.query.username) {
-            dbQuery.username = req.query.username;
+        try {
+            const dbQuery = {};
+            if (req.query.username) {
+                dbQuery.username = req.query.username;
+            }
+            if (req.query.updatedFrom && req.query.updatedTo) {
+                dbQuery.updated = {
+                    $between: [req.query.updatedFrom && req.query.updatedTo],
+                };
+            }
+            if (req.query.updatedFrom || req.query.updatedTo) {
+                dbQuery.updated = req.query.updatedFrom || req.query.updatedTo;
+            }
+            const users = await db.User.findAll({
+                attributes: ["username", "id"],
+                where: dbQuery,
+            });
+            res.status(200).send({
+                data: users,
+            });
+        } catch (e) {
+            console.log(e);
+            res.status(500).send("Server Error");
         }
-        if (req.query.updatedFrom && req.query.updatedTo) {
-            dbQuery.updated = {
-                $between: [req.query.updatedFrom && req.query.updatedTo],
-            };
-        }
-        if (req.query.updatedFrom || req.query.updatedTo) {
-            dbQuery.updated = req.query.updatedFrom || req.query.updatedTo;
-        }
-
-        const users = await db.User.findAll({
-            attributes: ["username", "id"],
-            where: dbQuery,
-        });
-        res.status(200).send({
-            data: users,
-        });
     }
 );
 
@@ -53,21 +57,31 @@ router.post(
     ),
     async (req, res) => {
         const { username } = req.body;
-        const user = await db.User.create({
-            username,
-        });
-        res.status(200).send({
-            data: user,
-        });
+        try {
+            const user = await db.User.create({
+                username,
+            });
+            res.status(200).send({
+                data: user,
+            });
+        } catch (e) {
+            console.log(e);
+            res.status(500).send("Server Error");
+        }
     }
 );
 
 router.get("/:id", async (req, res) => {
-    const id = parseInt(req.params.id);
-    const user = await db.User.findOne({ where: { id }, attributes: ["username"] });
-    res.status(200).send({
-        data: user,
-    });
+    try {
+        const id = parseInt(req.params.id);
+        const user = await db.User.findOne({ where: { id }, attributes: ["username"] });
+        res.status(200).send({
+            data: user,
+        });
+    } catch (e) {
+        console.log(e);
+        res.status(500).send("Server Error");
+    }
 });
 
 router.post(
@@ -89,29 +103,34 @@ router.post(
         true
     ),
     async (req, res) => {
-        const userId = parseInt(req.params.id);
-        const { date, duration, description } = req.body;
-        const user = await db.User.findOne({ where: { id: userId }, attributes: ["username", "id"] });
-        if (!user) {
-            res.status(400).send({
-                errors: {
-                    id: "No user with such id!",
+        try {
+            const userId = parseInt(req.params.id);
+            const { date, duration, description } = req.body;
+            const user = await db.User.findOne({ where: { id: userId }, attributes: ["username", "id"] });
+            if (!user) {
+                res.status(400).send({
+                    errors: {
+                        id: "No user with such id!",
+                    },
+                });
+                return;
+            }
+            const exercise = await db.Exercise.create({
+                date,
+                duration,
+                description,
+                userId,
+            });
+            res.status(200).send({
+                data: {
+                    user,
+                    exercise,
                 },
             });
-            return;
+        } catch (e) {
+            console.log(e);
+            res.status(500).send("Server Error");
         }
-        const exercise = await db.Exercise.create({
-            date,
-            duration,
-            description,
-            userId,
-        });
-        res.status(200).send({
-            data: {
-                user,
-                exercise,
-            },
-        });
     }
 );
 
@@ -129,25 +148,34 @@ router.get(
         },
     }),
     async (req, res) => {
-        const id = parseInt(req.params.id);
+        try {
+            const id = parseInt(req.params.id);
 
-        const exerciseQuery = {
-            userId: id,
-        };
-        if (req.query.from && req.query.to) {
-            exerciseQuery.updated = {
-                $between: [req.query.from && req.query.to],
+            const exerciseQuery = {
+                userId: id,
             };
-        }
-        if (req.query.from || req.query.to) {
-            exerciseQuery.updated = req.query.from || req.query.to;
-        }
+            if (req.query.from && req.query.to) {
+                exerciseQuery.updated = {
+                    $between: [req.query.from && req.query.to],
+                };
+            }
+            if (req.query.from || req.query.to) {
+                exerciseQuery.updated = req.query.from || req.query.to;
+            }
 
-        const user = await db.User.findOne({ where: { id }, attributes: ["username"] });
-        const exercises = await db.Exercise.findAll({ where: exerciseQuery, limit: req.query.limit || null , attributes: ["duration", "description", 'date']});
-        res.status(200).send({
-            data: { ...user.dataValues, logs: exercises || [], count: exercises.length },
-        });
+            const user = await db.User.findOne({ where: { id }, attributes: ["username"] });
+            const exercises = await db.Exercise.findAll({
+                where: exerciseQuery,
+                limit: req.query.limit || null,
+                attributes: ["duration", "description", "date"],
+            });
+            res.status(200).send({
+                data: { ...user.dataValues, logs: exercises || [], count: exercises.length },
+            });
+        } catch (e) {
+            console.log(e);
+            res.status(500).send("Server Error");
+        }
     }
 );
 
