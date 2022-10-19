@@ -23,17 +23,13 @@ router.get(
             if (req.query.username) {
                 dbQuery.username = req.query.username;
             }
-            if (req.query.updatedFrom && req.query.updatedTo) {
-                dbQuery.updated = {
-                    $between: [req.query.updatedFrom && req.query.updatedTo],
-                };
+            if (req.query.updatedFrom || req.query.updatedTo) {
+                exerciseQuery.updatedAt = {};
             }
             if (req.query.updatedFrom) {
-                exerciseQuery.updatedAt = {};
                 exerciseQuery.updatedAt[Op.gte] = new Date(req.query.updatedFrom);
             }
             if (req.query.updatedTo) {
-                exerciseQuery.updatedAt = {};
                 exerciseQuery.updatedAt[Op.lte] = new Date(req.query.updatedTo);
             }
             const users = await db.User.findAll({
@@ -168,16 +164,12 @@ router.get(
                 userId: id,
             };
             if (req.query.from && req.query.to) {
-                exerciseQuery.updated = {
-                    $between: [req.query.from && req.query.to],
-                };
+                exerciseQuery.date = {};
             }
             if (req.query.from) {
-                exerciseQuery.date = {};
                 exerciseQuery.date[Op.gte] = new Date(req.query.from);
             }
             if (req.query.to) {
-                exerciseQuery.date = {};
                 exerciseQuery.date[Op.lte] = new Date(req.query.to);
             }
 
