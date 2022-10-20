@@ -94,7 +94,7 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post(
-    "/:id/exercises",
+    "/:id?/exercises",
     validator(
         {
             description: {
@@ -108,6 +108,9 @@ router.post(
             date: {
                 type: "date",
             },
+            'id': {
+                required: true,
+            }
         },
         true
     ),

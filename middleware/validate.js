@@ -18,6 +18,13 @@ const validator = (validateOptions, isBodyParam) => (req, res, next) => {
     fields.forEach((field) => {
         const fieldValidateParam = validateOptions[field]
         const fieldValue = valueToValidate[field];
+        console.log(req.params, field)
+        if (field === 'id') {
+            if(fieldValidateParam.required && !req.params.id){
+                errors[field] = `${field} is required!`;
+            }
+            return
+        }
         if (fieldValidateParam.required && !fieldValue) {
             errors[field] = `${field} is required!`;
         }
